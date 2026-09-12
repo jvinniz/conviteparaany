@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DE: VINI
+  PARA: ANY
+</title>
+<style>
+  :root{
+    --plum: #2B1B3D;
+    --plum-deep: #1A0F28;
+    --gold: #E3B23C;
+    --pink: #FF7AA8;
+    --cream: #FFF6EA;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,122,168,0.25), transparent 45%),
+      radial-gradient(circle at 80% 80%, rgba(227,178,60,0.2), transparent 45%),
+      var(--plum-deep);
+    font-family: 'Georgia', 'Iowan Old Style', serif;
+    color: var(--cream);
+    overflow:hidden;
+    padding: 24px;
+  }
+
+  .card{
+    position:relative;
+    max-width: 480px;
+    width:100%;
+    text-align:center;
+    padding: 48px 36px 40px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border: 1px solid rgba(227,178,60,0.35);
+    border-radius: 18px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+
+  .crown{
+    font-size: 46px;
+    display:inline-block;
+    margin-bottom: 6px;
+    animation: bob 3.2s ease-in-out infinite;
+  }
+
+  @keyframes bob{
+    0%,100%{ transform: translateY(0) rotate(-4deg); }
+    50%{ transform: translateY(-6px) rotate(4deg); }
+  }
+
+  h1{
+    font-size: 28px;
+    line-height: 1.35;
+    margin: 8px 0 4px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+  }
+
+  h1 .highlight{
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  p.sub{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    color: rgba(255,246,234,0.75);
+    margin: 14px 0 34px;
+    line-height: 1.6;
+  }
+
+  .decree{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 12.5px;
+    letter-spacing: 0.5px;
+    color: var(--pink);
+    margin-bottom: 18px;
+  }
+
+  .buttons{
+    position: relative;
+    display:flex;
+    gap: 18px;
+    justify-content:center;
+    align-items:center;
+    min-height: 70px;
+  }
+
+  button{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 14px 28px;
+    border-radius: 999px;
+    border: none;
+    cursor:pointer;
+    transition: transform 0.15s ease;
+  }
+
+  #yes{
+    background: linear-gradient(135deg, var(--gold), #F2CE7A);
+    color: var(--plum-deep);
+    box-shadow: 0 10px 28px rgba(227,178,60,0.4);
+  }
+  #yes:hover{ transform: scale(1.06); }
+  #yes:active{ transform: scale(0.97); }
+
+  #no{
+  background: rgba(43,27,61,0.9);
+  color: rgba(255,246,234,0.75);
+  border: 1px solid rgba(255,246,234,0.3);
+  position: fixed;
+  z-index: 50;
+  visibility: hidden;
+}
+
+  #result{
+    margin-top: 26px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    color: var(--gold);
+    min-height: 20px;
+  }
+
+  .footnote{
+    margin-top: 28px;
+    font-size: 11px;
+    color: rgba(255,246,234,0.35);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .crown{ animation: none; }
+    button{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <span class="crown">👑</span>
+    <div class="decree">CONVITE ESPECIAL</div>
+    <h1>Oiii gatinha, o <span class="highlight">seu príncipe</span><br>gostaria de sair com você</h1>
+    <p class="sub">Vou deixar você escolher tudo, o lugar, a hora e o dia porque, quem manda em tudo é você. 👸</p>
+
+    <div class="buttons" id="buttonRow">
+      <button id="yes">Aceito, meu amor!</button>
+      <button id="no">Não</button>
+    </div>
+
+    <div id="result"></div>
+    <div class="footnote">Se você não aceitar lembre que eu vou ficar muito triste.</div>
+  </div>
+
+<script>
+  const noBtn = document.getElementById('no');
+  const yesBtn = document.getElementById('yes');
+  const row = document.getElementById('buttonRow');
+  const result = document.getElementById('result');
+  let phraseIndex = 0;
+  let dodges = 0;
+
+  function moveNoButton(){
+  const btnRect = noBtn.getBoundingClientRect();
+  const margin = 12;
+  const maxX = window.innerWidth - btnRect.width - margin;
+  const maxY = window.innerHeight - btnRect.height - margin;
+
+  const newX = margin + Math.random() * (maxX - margin);
+  const newY = margin + Math.random() * (maxY - margin);
+
+  noBtn.style.left = newX + 'px';
+  noBtn.style.top = newY + 'px';
+
+  result.textContent = phrases[phraseIndex % phrases.length];
+  phraseIndex++;
+  dodges++;
+}
+
+function setInitialPosition(){
+  const yesRect = yesBtn.getBoundingClientRect();
+  const btnRect = noBtn.getBoundingClientRect();
+  const initialX = yesRect.left + (yesRect.width / 2) - (btnRect.width / 2);
+  const initialY = yesRect.bottom + 18;
+
+  noBtn.style.left = Math.max(12, initialX) + 'px';
+  noBtn.style.top = initialY + 'px';
+  noBtn.style.visibility = 'visible';
+}
+
+window.addEventListener('load', setInitialPosition);
+window.addEventListener('resize', setInitialPosition);
+
+  noBtn.style.left = '260px';
+  noBtn.style.top = '0px';
+
+  noBtn.addEventListener('mouseenter', moveNoButton);
+  noBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    moveNoButton();
+  });
+  noBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    moveNoButton();
+  });
+
+  yesBtn.addEventListener('click', () => {
+    document.querySelector('.card').innerHTML = `
+      <span class="crown">💍</span>
+      <h1>Sempre soube que você era louquinha por mim, Any! <span class="highlight">Beijo!!</span></h1>
+      <p class="sub">Agora é só informar o local, horário e dia, seu gatinho vai te buscar e te levar pra onde você quiser!.</p>
+    `;
+  });
+</script>
+
+</body>
+</html>
